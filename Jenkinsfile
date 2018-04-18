@@ -23,14 +23,18 @@ pipeline {
         }
         stage('Lanzo Sonar') {
           steps {
-            sh 'mvn sonar:sonar'
+            withSonarQubeEnv('sonar-local'){
+                sh 'mvn sonar:sonar'
+	    }
           }
         }
       }
     }
     stage('no puedes pasar') {
       steps {
-        waitForQualityGate true
+        timeout(time: 1, unit: 'HOURS'){
+           waitForQualityGate true
+        }
       }
     }
     stage('Instalar en el repo local') {
